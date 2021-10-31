@@ -6,29 +6,34 @@ import PyPDF2 as pf
 import sys
 import re
 
-#check for file names
-if len(sys.argv) != 3:
-    print('Incorrect script call.')
-    exit()
+def read_pdf():
 
-#read in pdf
-in_file = sys.argv[1]
-reader = pf.PdfFileReader('./data/' + in_file)
+    #read in pdf
+    in_file = input('Pdf Location: ')
+    reader = pf.PdfFileReader(in_file)
 
-#get number of pages
-page_count = reader.numPages
-print(page_count)
-#set output name
-out_file = sys.argv[2]
-output_file = out_file
+    #get number of pages
+    page_count = reader.numPages
+    print(page_count)
 
-with open(output_file, 'w') as output:
-    for i in range(page_count):
-        page = reader.getPage(i)
+    file_name_approved = False
+    while not file_name_approved:
+        output_file = input('Output file path: ') + '.txt'
+        print('File will be written to '+ output_file)
+        approval = ''
+        while approval not in ['yes', 'no']:
+            approval = input('Is this correct? (yes/no)').lower()
+            if approval == 'yes':
+                file_name_approved = True
 
-        #pdf specific cleaning. change according to needs
-        #page = re.sub(" +", " ", page.extractText())
-        #page = re.sub("\. \. \.", "...", page)
-        #page = re.sub("\n", "", page)
+    with open(output_file, 'w') as output:
+            for i in range(page_count):
+                page = reader.getPage(i)
 
-        output.write(page.extractText())
+                #pdf specific cleaning. change according to needs
+                #page = re.sub(" +", " ", page.extractText())
+                #page = re.sub("\. \. \.", "...", page)
+                #page = re.sub("\n", "", page)
+
+                output.write(page.extractText())
+read_pdf()
